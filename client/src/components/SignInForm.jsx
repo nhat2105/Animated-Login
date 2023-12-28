@@ -1,8 +1,24 @@
 import { Button, Stack, TextField, Typography, colors } from '@mui/material';
-import React from 'react'
+import React, { useState } from 'react'
 import { ScreenMode } from '../pages/SigninPage';
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
-const SignUpForm = ( {onSwitchMode} ) =>  {
+const SignInForm = ( {onSwitchMode} ) =>  {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate()
+
+    const handleLogin = async () => {
+        try {
+            const response = await axios.post('http://localhost:3001/login', { username, password });
+            if (response.data.user)navigate('/welcome')
+
+          } catch (error) {
+            console.error('Error logging user in:', error);
+          }
+    }
+
     return (
        <Stack 
         justifyContent = "center"
@@ -13,10 +29,10 @@ const SignUpForm = ( {onSwitchMode} ) =>  {
             maxWidth: "700px",
             color: colors.grey[800]
         }}>
-            <Stack spacing= {5}>
+            <Stack spacing= {5}>    
                 <Stack>
                     <Typography variant='h4' fontWeight={600} color={colors.grey[800]}>
-                        Create an account
+                        Welcome back!
                     </Typography>
 
                 </Stack>
@@ -25,18 +41,13 @@ const SignUpForm = ( {onSwitchMode} ) =>  {
             <Stack spacing={4}>
                 <Stack spacing = {2}>
                     <Stack spacing = {1}>
-                        <Typography color={colors.grey[800]}>Name</Typography>
-                        <TextField />
-                    </Stack>
-
-                    <Stack spacing = {1}>
-                        <Typography color={colors.grey[800]}>Email</Typography>
-                        <TextField />
+                        <Typography color={colors.grey[800]}>Username</Typography>
+                        <TextField value={username} type = 'text' onChange={(e) => setUsername(e.target.value)}/>
                     </Stack>
 
                     <Stack spacing = {1}>
                         <Typography color={colors.grey[800]}>Password</Typography>
-                        <TextField type = 'password' />
+                        <TextField value= {password} type = 'password' onChange={(e) => setPassword(e.target.value)}/>
                     </Stack>
 
                     <Button 
@@ -46,26 +57,29 @@ const SignUpForm = ( {onSwitchMode} ) =>  {
                             bgcolor: colors.grey[800],
                             "&:hover" : { bgcolor: colors.grey[600]}
                         }}
+
+                        onClick={handleLogin}
                     >
                         Sign in
                     </Button>
                 </Stack>
 
                 <Stack direction = "row" spacing={2}>
-                    <Typography>Already hve an account?</Typography>
+                    <Typography>Don't have an account?</Typography>
+                        
                     <Typography
-                    onClick={() => onSwitchMode(ScreenMode.SIGN_IN)}    
+                    onClick={() => onSwitchMode(ScreenMode.SIGN_UP)}    
                     fontWeight = {600}
                     sx = {{
                         cursor:"pointer",
                         userSelect: "none"
                     }}
                     >
-                    Sign in
+                    Sign up now
                     </Typography>
                 </Stack>
             </Stack>
        </Stack>
     );
 };
-export default SignUpForm; 
+export default SignInForm; 

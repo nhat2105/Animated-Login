@@ -1,8 +1,22 @@
 import { Button, Stack, TextField, Typography, colors } from '@mui/material';
-import React from 'react'
+import React, {useState} from 'react'
 import { ScreenMode } from '../pages/SigninPage';
+import axios from 'axios'
 
-const SignInForm = ( {onSwitchMode} ) =>  {
+const SignUpForm = ( {onSwitchMode} ) =>  {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleRegister = async () => {
+        try {
+            await axios.post('http://localhost:3001/register', { username, password });
+          } catch (error) {
+            console.error('Error registering user:', error);
+          }
+
+        onSwitchMode(ScreenMode.SIGN_IN)
+    }
+
     return (
        <Stack 
         justifyContent = "center"
@@ -13,10 +27,10 @@ const SignInForm = ( {onSwitchMode} ) =>  {
             maxWidth: "700px",
             color: colors.grey[800]
         }}>
-            <Stack spacing= {5}>    
+            <Stack spacing= {5}>
                 <Stack>
                     <Typography variant='h4' fontWeight={600} color={colors.grey[800]}>
-                        Welcome back!
+                        Create an account
                     </Typography>
 
                 </Stack>
@@ -25,13 +39,13 @@ const SignInForm = ( {onSwitchMode} ) =>  {
             <Stack spacing={4}>
                 <Stack spacing = {2}>
                     <Stack spacing = {1}>
-                        <Typography color={colors.grey[800]}>Email</Typography>
-                        <TextField />
+                        <Typography color={colors.grey[800]}>Username</Typography>
+                        <TextField value = {username} type = 'text' onChange={(e) => setUsername(e.target.value)}/>
                     </Stack>
 
                     <Stack spacing = {1}>
                         <Typography color={colors.grey[800]}>Password</Typography>
-                        <TextField type = 'password' />
+                        <TextField value = {password} type = 'password' onChange={(e) => setPassword(e.target.value)} />
                     </Stack>
 
                     <Button 
@@ -41,27 +55,28 @@ const SignInForm = ( {onSwitchMode} ) =>  {
                             bgcolor: colors.grey[800],
                             "&:hover" : { bgcolor: colors.grey[600]}
                         }}
+
+                        onClick={handleRegister}
                     >
-                        Sign in
+                        Sign up
                     </Button>
                 </Stack>
 
                 <Stack direction = "row" spacing={2}>
-                    <Typography>Don't have an account?</Typography>
-                        
+                    <Typography>Already have an account?</Typography>
                     <Typography
-                    onClick={() => onSwitchMode(ScreenMode.SIGN_UP)}    
+                    onClick={() => onSwitchMode(ScreenMode.SIGN_IN)}    
                     fontWeight = {600}
                     sx = {{
                         cursor:"pointer",
                         userSelect: "none"
                     }}
                     >
-                    Sign up now
+                    Sign in
                     </Typography>
                 </Stack>
             </Stack>
        </Stack>
     );
 };
-export default SignInForm; 
+export default SignUpForm; 
